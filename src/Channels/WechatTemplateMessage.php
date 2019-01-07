@@ -1,39 +1,41 @@
 <?php
 
-/*
- * This file is part of ibrand/notification.
- *
- * (c) iBrand <https://www.ibrand.cc>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace iBrand\Notification\Channels;
 
-use EasyWeChat;
 use Illuminate\Notifications\Notification;
+use EasyWeChat\Factory;
 
 class WechatTemplateMessage
 {
-    /**
-     * @param $notifiable
-     * @param Notification $notification
-     */
-    public function send($notifiable, Notification $notification)
-    {
-        if (!$notification->checkOpenId($notifiable)) {
-            return;
-        }
+	/**
+	 * @param              $notifiable
+	 * @param Notification $notification
+	 */
+	public function send($notifiable, Notification $notification)
+	{
+		$openid = $notification->toUser($notifiable);
+		if (!$openid) {
+			return;
+		}
 
-        $data = $notification->getTemplateMessage($notifiable);
+		$data = $notification->getMessage($notifiable);
+		if (!empty($data)) {
+			return;
+		}
 
-        if (!$data) {
-            return;
-        }
+		$config = [
+			'app_id' => 'wx3cf0f39249eb0exx',
+			'secret' => 'f1c242f4f28f735d4687abb469072axx',
+		];
 
-        $app = EasyWeChat::officialAccount();
+		$app = Factory::officialAccount($config);
+		try {
+			$app->template_message->send($data);
+		} catch (\Exception $exception) {
+			\Log::info($exception->getMessage());
+			\Log::info($exception->getTraceAsString());
 
-        $app->template_message->send($data);
-    }
+			return false;
+		}
+	}
 }
