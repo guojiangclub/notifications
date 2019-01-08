@@ -11,28 +11,45 @@
 
 namespace iBrand\Notification;
 
-use iBrand\Notification\Channels\WechatTemplateMessage;
+use iBrand\Notification\Channels\OfficialAccount;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
 
-abstract class OfficialAccountTemplateMessage extends Notification implements ShouldQueue, BaseNotification
+class OfficialAccountTemplateMessage extends Notification implements ShouldQueue
 {
 	use Queueable;
 
+	protected $openid;
+
 	protected $data;
 
-	public function __construct($data = [])
+	protected $handle;
+
+	public function __construct(array $data, $openid, $handle)
 	{
-		$this->data = $data;
+		$this->openid = $openid;
+		$this->data   = $data;
+		$this->handle = $handle;
 	}
 
 	public function via($notifiable)
 	{
-		return [WechatTemplateMessage::class];
+		return [OfficialAccount::class];
 	}
 
-	abstract public function toUser($user);
+	public function toUser()
+	{
+		return $this->openid;
+	}
 
-	abstract public function getMessage();
+	public function handle()
+	{
+		return $this->handle;
+	}
+
+	public function getData()
+	{
+		return $this->data;
+	}
 }
