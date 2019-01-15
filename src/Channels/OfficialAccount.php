@@ -24,9 +24,9 @@ class OfficialAccount
 			return false;
 		}
 
-		$handle = $notification->handle();
+		$app = $notification->getApp();
 		try {
-			$handle->send($data);
+			$app->template_message->send($data);
 
 			return true;
 		} catch (\Exception $exception) {

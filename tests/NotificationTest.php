@@ -29,13 +29,20 @@ class NotificationTest extends BaseTest
 			],
 		];
 		$openid = 'ofeBM5ZyivQHt-eQH2qdDGh0PLJM';
-		$handle = Factory::officialAccount($config);
+		$app    = Factory::officialAccount($config);
 
-		$user->notify(new OfficialAccountTemplateMessage($data, $openid, $handle));
+		$message = new OfficialAccountTemplateMessage($data, $openid, $app);
+		$user->notify($message);
 
 		// 断言通知已经发送给了指定用户...
 		Notification::assertSentTo(
 			[$user], OfficialAccountTemplateMessage::class
 		);
+
+		$this->assertSame($message->toUser(), $openid);
+
+		$this->assertSame($message->getData(), $data);
+
+		$this->assertSame($message->handle(), $app);
 	}
 }

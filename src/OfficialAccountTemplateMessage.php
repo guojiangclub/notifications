@@ -24,13 +24,13 @@ class OfficialAccountTemplateMessage extends Notification implements ShouldQueue
 
 	protected $data;
 
-	protected $handle;
+	protected $app;
 
-	public function __construct(array $data, $openid, $handle)
+	public function __construct(array $data, $openid, $app)
 	{
 		$this->openid = $openid;
 		$this->data   = $data;
-		$this->handle = $handle;
+		$this->app    = $app;
 	}
 
 	public function via($notifiable)
@@ -43,9 +43,9 @@ class OfficialAccountTemplateMessage extends Notification implements ShouldQueue
 		return $this->openid;
 	}
 
-	public function handle()
+	public function getApp()
 	{
-		return $this->handle;
+		return $this->app;
 	}
 
 	public function getData()
