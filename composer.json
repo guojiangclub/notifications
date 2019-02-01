@@ -33,13 +33,6 @@
 			"iBrand\\Notification\\Test\\": "tests/"
 		}
 	},
-	"extra": {
-		"laravel": {
-			"providers": [
-				"iBrand\\Notification\\NotificationServiceProvider"
-			]
-		}
-	},
 	"minimum-stability": "dev",
 	"prefer-stable": true
 }
